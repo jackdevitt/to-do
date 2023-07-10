@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 
+document.getElementById("header").style.display = "none";
 const root = createRoot(document.getElementById("priorityRoot"));
 let logIn = false;
 let signUp = false;
