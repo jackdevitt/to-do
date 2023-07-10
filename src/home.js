@@ -164,8 +164,6 @@ const Home = () => {
                         </label>
                         <p className = "error">{submitResponse}</p>
                         <br />  
-                        <br />
-                        <br />
                         <input type = "submit" className = "input-submit"></input>
                     </form>
                 </div>

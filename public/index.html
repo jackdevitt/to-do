@@ -7,16 +7,18 @@
     </head>
     <body>
       <div id = "header">
-        <img id = "logo" src = "logo.png" width = "65px" height = "65px" />
+        <button id = "returnHome"><img id = "logoImage" src = "logo.png" width = "65px" height = "65px" /></button>
         <h3 id = "title"></h3>
         <div id = "tabs">
             <button class = "tabButton" id = "todoTab">To-Do</button>
             <button class = "tabButton" id = "completedTab">Completed</button>
         </div>
-        <div id = "lastItems">
-            <input placeholder = "Search..." id = "searchbar" type = "text"></input>
+        <div id = "secondRow">
+          <div id = "lastItems">
+              <input placeholder = "Search..." id = "searchbar" type = "text"></input>
+          </div>
+          <button id = "create"><img src = "add.png" width = "50px" height = "50px"></button>
         </div>
-        <button id = "create"><img src = "add.png" width = "50px" height = "50px"></button>
       </div>
       <div class = "outer-container" id = "priorityRoot"></div>
 

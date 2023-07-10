@@ -25,6 +25,11 @@ let confirmedName = "";
 let confirmedDesc = "";
 let confirmedPriority = null;
 
+document.getElementById("returnHome").addEventListener("click", function () {
+    window.sessionStorage.setItem("user-id", "");
+    window.location.href = "/";
+});
+
 document.getElementById("todoTab").addEventListener("click", function () {
     showCompleted = false;
     grabData = true;
