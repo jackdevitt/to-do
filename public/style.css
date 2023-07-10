@@ -39,7 +39,6 @@ body {
     font-family: "Arial", sans-serif;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     margin-left: 10px;
-    width: 10%;
 }
 
 .grid-container {
@@ -232,10 +231,9 @@ body {
 
 #tabs {
     display: flex;
-    justify-content: flex-start;
     margin-right: auto;
-    margin-left: auto;
-    width: 20%;
+    margin-left: 30vw;
+    width: 20vw;
     justify-content: space-evenly;
 }
 

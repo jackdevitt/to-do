@@ -56,7 +56,8 @@ const Home = () => {
                 setName("");
                 setPassword("");
                 
-                window.location.href = `/app?userId=${userId}`;
+                window.sessionStorage.setItem("user-id", userId);
+                window.location.href = `/app`;
             } else {
                 setSubmitResponse("Username or password is incorrect");
                 setUserField("");

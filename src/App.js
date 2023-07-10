@@ -15,8 +15,6 @@ let showFinished = false;
 let restoreTitle = "Task";
 let restoreConfirmation = false;
 
-let userId = 0;
-
 let tempID = 0;
 let tempName = "";
 let tempDesc = "";
@@ -115,12 +113,6 @@ const ConfettiOverlay = ({ onConfettiComplete }) => {
     );
 };
 
-const urlParams = new URLSearchParams(window.location.search);
-userId = parseInt(urlParams.get("userId"));
-if (userId == null) {
-    console.log("Bad things");
-}
-
 const App = () => {
     document.getElementById("header").style.display = "flex";
     const [name, setName] = useState(null)
@@ -196,8 +188,8 @@ const App = () => {
 
         let req = new XMLHttpRequest();
         req.open("POST", `http://localhost:8080/addItem`);
+        req.setRequestHeader("User-Id", parseInt(window.sessionStorage.getItem("user-id")));
         req.onload = function() {
-            console.log(req.responseText);
             setName(null);
             setDescription(null);
             setPriority(null);
@@ -207,7 +199,7 @@ const App = () => {
             grabData = true;
             root.render(<App />)
         }
-        req.send(JSON.stringify({"name": name, "desc": newDesc, "topPriority": newPriority, "userId": userId}));
+        req.send(JSON.stringify({"name": name, "desc": newDesc, "topPriority": newPriority}));
     }
 
     const handleConfettiComplete = () => {
@@ -476,14 +468,16 @@ function showFormEdit(id, name, desc, priority) {
 function getData(callback) {
     if (filter == "") {
         let req = new XMLHttpRequest();
-        req.open("GET", `http://localhost:8080/getItems?userId=${userId}`, true);
+        req.open("GET", `http://localhost:8080/getItems`, true);
+        req.setRequestHeader("User-Id", parseInt(window.sessionStorage.getItem("user-id")));
         req.onload = function() {
             callback(req.responseText);
         }
         req.send();
     } else {
         let req = new XMLHttpRequest();
-        req.open("GET", `http://localhost:8080/getItems?userId=${userId}&rawName=${filter}`, true)
+        req.open("GET", `http://localhost:8080/getItems?rawName=${filter}`, true);
+        req.setRequestHeader("User-Id", parseInt(window.sessionStorage.getItem("user-id")));
         req.onload = function() {
             callback(req.responseText);
         }
