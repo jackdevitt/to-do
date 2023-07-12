@@ -14,6 +14,7 @@ let showCompleted = false;
 let showFinished = false;
 let restoreTitle = "Task";
 let restoreConfirmation = false;
+//let scrolledToBottom = false;
 
 let tempID = 0;
 let tempName = "";
@@ -24,6 +25,21 @@ let confirmedID = 0;
 let confirmedName = "";
 let confirmedDesc = "";
 let confirmedPriority = null;
+
+/*
+let count = 21;
+
+window.addEventListener('scroll', function() {
+    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && !scrolledToBottom) {
+        count += 21;
+        grabData = true;
+        root.render(<App />);
+        scrolledToBottom = true;
+    } else if (window.innerHeight + window.pageYOffset + 50 <= document.body.offsetHeight) {
+        scrolledToBottom = false;
+    }
+});
+*/
 
 document.getElementById("returnHome").addEventListener("click", function () {
     window.sessionStorage.setItem("user-id", "");
@@ -61,6 +77,15 @@ function removeItem(id) {
         root.render(<App />)
     }
     req.send();
+}
+
+function handleScroll (event) {
+    console.log("scroll")
+    const target = event.target;
+
+    if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+        console.log("End of page")
+    }
 }
 
 function restore(id, name, desc, status) {
@@ -473,6 +498,7 @@ function showFormEdit(id, name, desc, priority) {
 function getData(callback) {
     if (filter == "") {
         let req = new XMLHttpRequest();
+        //req.open("GET", `http://localhost:8080/getItemsByCount?count=${count}`, true);
         req.open("GET", `http://localhost:8080/getItems`, true);
         req.setRequestHeader("User-Id", parseInt(window.sessionStorage.getItem("user-id")));
         req.onload = function() {
@@ -481,6 +507,7 @@ function getData(callback) {
         req.send();
     } else {
         let req = new XMLHttpRequest();
+        //req.open("GET", `http://localhost:8080/getItems?count=${count}&rawName=${filter}`, true);
         req.open("GET", `http://localhost:8080/getItems?rawName=${filter}`, true);
         req.setRequestHeader("User-Id", parseInt(window.sessionStorage.getItem("user-id")));
         req.onload = function() {
