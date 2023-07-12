@@ -95,7 +95,6 @@ function restore(id, name, desc, status) {
     req.onload = function() {
         grabData = true;
         restoreConfirmation = false;
-        showCompleted = false;
         root.render(<App />);
     }
     req.send(JSON.stringify({"name": name, "desc": desc, "status": false, "completed": false}));
@@ -121,6 +120,24 @@ function restoreTask(id, title, desc, status) {
     restoreConfirmation = true;
     root.render(<App />)
 }
+
+
+const PercentageBar = ({ value, total }) => {
+    const [percentage, setPercentage] = useState((value / total) * 100);
+  
+    const barStyle = {
+      width: `${percentage}%`,
+      background: `rgb(34, 201, 112)`,
+      transition: 'width 0.5s',
+    };
+  
+    return (
+      <div className="percentage-bar">
+        <div className="bar" style={barStyle}></div>
+        <span className="percentage">{`${percentage.toFixed(2)}%`}</span>
+      </div>
+    );
+};
 
 const ConfettiOverlay = ({ onConfettiComplete }) => {
     const [showConfetti, setShowConfetti] = useState(true);
@@ -301,8 +318,18 @@ const App = () => {
                 }
             });
             if (showFinished) {
+                let completedCount = 0;
+                let activeCount = 0;
+                for (let i = 0; i < data.Items.length; i++) {
+                    if (data.Items[i]["completed"] == true) {
+                        completedCount++;
+                    }
+                    activeCount++;
+                }
+                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                 return (
                     <div className = "formContainer">
+                        <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
                         <div id = "confetti-container">{<ConfettiOverlay onConfettiComplete={handleConfettiComplete}/>}</div>
                         <div className="blurCover"></div>
                         <div className="grid-container priority-grid">{insertion}{normalInsertion}</div>
@@ -318,8 +345,18 @@ const App = () => {
                 );
             }
             if (formScreenEdit) {
+                let completedCount = 0;
+                let activeCount = 0;
+                for (let i = 0; i < data.Items.length; i++) {
+                    if (data.Items[i]["completed"] == true) {
+                        completedCount++;
+                    }
+                    activeCount++;
+                }
+                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                 return (
                     <div className = "formContainer">
+                        <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
                         <div className="grid-container priority-grid">{insertion}{normalInsertion}</div>
                         <div className="blurCover"></div>
                         <div className = "form">
@@ -358,8 +395,18 @@ const App = () => {
                 );
             }
             if (formScreenAdd) {
+                let completedCount = 0;
+                let activeCount = 0;
+                for (let i = 0; i < data.Items.length; i++) {
+                    if (data.Items[i]["completed"] == true) {
+                        completedCount++;
+                    }
+                    activeCount++;
+                }
+                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                 return (
                     <div className = "formContainer">
+                        <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
                         <div className="grid-container priority-grid">{insertion}{normalInsertion}</div>
                         <div className="blurCover"></div>
                         <div className = "form">
@@ -400,7 +447,16 @@ const App = () => {
             if (count == 0) {
                 return <h1 className = "pageDescription">You're all caught up!</h1>;
             }
-            return <div className="grid-container priority-grid">{insertion}{normalInsertion}</div>;
+            let completedCount = 0;
+            let activeCount = 0;
+            for (let i = 0; i < data.Items.length; i++) {
+                if (data.Items[i]["completed"] == true) {
+                    completedCount++;
+                }
+                activeCount++;
+            }
+            let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
+            return <div><div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div><div className="grid-container priority-grid">{insertion}{normalInsertion}</div></div>;
         } else {
             document.getElementById("todoTab").style.fontWeight = "lighter";
             document.getElementById("completedTab").style.fontWeight = "bold";
@@ -419,8 +475,18 @@ const App = () => {
                     }
                 });
                 if (formScreenAdd) {
+                    let completedCount = 0;
+                    let activeCount = 0;
+                    for (let i = 0; i < data.Items.length; i++) {
+                        if (data.Items[i]["completed"] == true) {
+                            completedCount++;
+                        }
+                        activeCount++;
+                    }
+                    let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                     return (
                         <div className = "formContainer">
+                            <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
                             <div className="grid-container priority-grid">{insertion}</div>
                             <div className="blurCover"></div>
                             <div className = "form">
@@ -459,8 +525,18 @@ const App = () => {
                     );
                 }
                 if (restoreConfirmation) {
+                    let completedCount = 0;
+                    let activeCount = 0;
+                    for (let i = 0; i < data.Items.length; i++) {
+                        if (data.Items[i]["completed"] == true) {
+                            completedCount++;
+                        }
+                        activeCount++;
+                    }
+                    let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                     return (
                         <div className = "formContainer">
+                            <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
                             <div className="blurCover"></div>
                             <div className="grid-container priority-grid">{insertion}</div>
                             <div className = "form">
@@ -477,7 +553,16 @@ const App = () => {
                         </div>
                     );
                 }
-                return <div className="grid-container priority-grid">{insertion}</div>
+                let completedCount = 0;
+                let activeCount = 0;
+                for (let i = 0; i < data.Items.length; i++) {
+                    if (data.Items[i]["completed"] == true) {
+                        completedCount++;
+                    }
+                    activeCount++;
+                }
+                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
+                return <div><div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div><div className="grid-container priority-grid">{insertion}</div></div>
             }
         }
     } else {

@@ -42,7 +42,7 @@ body {
     background: linear-gradient(135deg, #eef2f3, #c4ced3);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 1);
     text-align: left;
     box-shadow: 10px 5px 5px grey;
     overflow: hidden;
@@ -573,7 +573,6 @@ body {
     }
     #title {
         margin-left: 5px;
-        margin-right: auto;
     }
     #secondRow {
         display: flex;
@@ -598,12 +597,30 @@ body {
     }
 }
 
-@media screen and (max-width: 500px) {
+.percentage-bar {
+    width: 800px;
+    height: 20px;
+    background-color: lightgray;
+    border: 2px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media screen and (min-width: 500px) {
     .tabButton {
         font-size: 15px;
     }
     .tabButton:hover {
         font-size: 20px;
+    }
+    .title {
+        margin-right: auto;
+    }
+    .percentage-bar {
+        width: 400px;
     }
 }
 
@@ -633,11 +650,11 @@ body {
     }
     #title {
         margin-left: 10px;
-        margin-right: auto;
     }
     #tabs {
-        margin-left: auto;
+        margin-left: 1px;
         margin-right: auto;
+        height: 100%;
     }
     #secondRow {
         height: 100%;
@@ -659,5 +676,21 @@ body {
     }
     .task:hover {
         transform: scale(1.05);
-      }
+    }
+    .percentage-bar {
+        width: 800px;
+    }
+}
+  
+.bar {
+    height: 100%;
+}
+
+.percentDisplay {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.percentCount {
+    margin-bottom: 1px;
 }
