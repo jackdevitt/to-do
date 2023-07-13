@@ -88,8 +88,10 @@ const Home = () => {
                 setConfirmField("");
                 if (req.status == 200) {
                     let response = JSON.parse(req.responseText);
+                    let userId = response["id"];
                     setSubmitResponse("");
-                    window.location.href = `/app?userId=${response["id"]}`;
+                    window.sessionStorage.setItem("user-id", userId);
+                    window.location.href = `/app`;
                 } else if (req.status == 409) {
                     setSubmitResponse("Username already taken");
                 } else {
