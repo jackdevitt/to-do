@@ -74,27 +74,19 @@ function removeItem(id) {
     req.open("DELETE", `http://localhost:8080/removeItem/${id}`, true)
     req.onload = function() {
         grabData = true;
-        root.render(<App />)
+        getPercentage = true;
+        root.render(<App />);
     }
     req.send();
 }
 
-function handleScroll (event) {
-    console.log("scroll")
-    const target = event.target;
-
-    if (target.scrollHeight - target.scrollTop === target.clientHeight) {
-        console.log("End of page")
-    }
-}
-
 function restore(id, name, desc, status) {
-    console.log(id, name, desc, status)
     let req = new XMLHttpRequest();
     req.open("PATCH", `http://localhost:8080/updateItem/${id}`)
     req.onload = function() {
         grabData = true;
         restoreConfirmation = false;
+        getPercentage = true;
         root.render(<App />);
     }
     req.send(JSON.stringify({"name": name, "desc": desc, "status": false, "completed": false}));
@@ -121,10 +113,37 @@ function restoreTask(id, title, desc, status) {
     root.render(<App />)
 }
 
+let completedCount;
+let activeCount;
+let percentage;
+let getPercentage = true;
+function setPercentage() {
+    let req = new XMLHttpRequest();
+    req.open("GET", `http://localhost:8080/getItems`, true);
+    req.setRequestHeader("User-Id", parseInt(window.sessionStorage.getItem("user-id")));
+    req.onload = function() {
+        completedCount = 0;
+        activeCount = 0;
+        for (let i = 0; i < data.Items.length; i++) {
+            if (data.Items[i]["completed"] == true) {
+                completedCount++;
+            }
+            activeCount++;
+        }
+        percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%";
+        getPercentage = false;
+        root.render(<App />);
+    }
+    req.send();
+}
 
 const PercentageBar = ({ value, total }) => {
     const [percentage, setPercentage] = useState((value / total) * 100);
-  
+
+    useEffect(() => {
+        setPercentage((value / total) * 100);
+    }, [value, total]);    
+
     const barStyle = {
       width: `${percentage}%`,
       background: `rgb(34, 201, 112)`,
@@ -176,6 +195,7 @@ const App = () => {
             grabData = true;
             showFinished = true;
             completedTitle = name;
+            getPercentage = true;
             root.render(<App />)
         }
         req.send(JSON.stringify({"name": name, "desc": desc, "topPriority": priority, "completed": true}));
@@ -240,7 +260,8 @@ const App = () => {
             setName(null);
             setDescription(null);
             setPriority(null);
-    
+            
+            getPercentage = true;
             showCompleted = false;
             formScreenAdd = false;
             grabData = true;
@@ -251,12 +272,10 @@ const App = () => {
 
     const handleConfettiComplete = () => {
         setShowConfetti(false);
-        console.log(showConfetti);
     }
 
     if (grabData) {
         getData(function(value) {
-            console.log(value);
             data = JSON.parse(value);
             grabData = false;
             root.render(<App />);
@@ -318,15 +337,6 @@ const App = () => {
                 }
             });
             if (showFinished) {
-                let completedCount = 0;
-                let activeCount = 0;
-                for (let i = 0; i < data.Items.length; i++) {
-                    if (data.Items[i]["completed"] == true) {
-                        completedCount++;
-                    }
-                    activeCount++;
-                }
-                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                 return (
                     <div className = "formContainer">
                         <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
@@ -345,15 +355,9 @@ const App = () => {
                 );
             }
             if (formScreenEdit) {
-                let completedCount = 0;
-                let activeCount = 0;
-                for (let i = 0; i < data.Items.length; i++) {
-                    if (data.Items[i]["completed"] == true) {
-                        completedCount++;
-                    }
-                    activeCount++;
+                if (getPercentage) {
+                    setPercentage();
                 }
-                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                 return (
                     <div className = "formContainer">
                         <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
@@ -395,15 +399,9 @@ const App = () => {
                 );
             }
             if (formScreenAdd) {
-                let completedCount = 0;
-                let activeCount = 0;
-                for (let i = 0; i < data.Items.length; i++) {
-                    if (data.Items[i]["completed"] == true) {
-                        completedCount++;
-                    }
-                    activeCount++;
+                if (getPercentage) {
+                    setPercentage();
                 }
-                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                 return (
                     <div className = "formContainer">
                         <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
@@ -447,15 +445,9 @@ const App = () => {
             if (count == 0) {
                 return <h1 className = "pageDescription">You're all caught up!</h1>;
             }
-            let completedCount = 0;
-            let activeCount = 0;
-            for (let i = 0; i < data.Items.length; i++) {
-                if (data.Items[i]["completed"] == true) {
-                    completedCount++;
-                }
-                activeCount++;
+            if (getPercentage) {
+                setPercentage();
             }
-            let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
             return <div><div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div><div className="grid-container priority-grid">{insertion}{normalInsertion}</div></div>;
         } else {
             document.getElementById("todoTab").style.fontWeight = "lighter";
@@ -475,15 +467,9 @@ const App = () => {
                     }
                 });
                 if (formScreenAdd) {
-                    let completedCount = 0;
-                    let activeCount = 0;
-                    for (let i = 0; i < data.Items.length; i++) {
-                        if (data.Items[i]["completed"] == true) {
-                            completedCount++;
-                        }
-                        activeCount++;
+                    if (getPercentage) {
+                        setPercentage();
                     }
-                    let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                     return (
                         <div className = "formContainer">
                             <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
@@ -525,15 +511,9 @@ const App = () => {
                     );
                 }
                 if (restoreConfirmation) {
-                    let completedCount = 0;
-                    let activeCount = 0;
-                    for (let i = 0; i < data.Items.length; i++) {
-                        if (data.Items[i]["completed"] == true) {
-                            completedCount++;
-                        }
-                        activeCount++;
+                    if (getPercentage) {
+                        setPercentage();
                     }
-                    let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                     return (
                         <div className = "formContainer">
                             <div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div>
@@ -553,15 +533,9 @@ const App = () => {
                         </div>
                     );
                 }
-                let completedCount = 0;
-                let activeCount = 0;
-                for (let i = 0; i < data.Items.length; i++) {
-                    if (data.Items[i]["completed"] == true) {
-                        completedCount++;
-                    }
-                    activeCount++;
+                if (getPercentage) {
+                    setPercentage();
                 }
-                let percentage = Math.round((10 * ((completedCount / activeCount) * 100)) / 10) + "%"
                 return <div><div><h1 className = "percentCount">{percentage}</h1><PercentageBar className = "percentDisplay" value = {completedCount} total = {activeCount}/></div><div className="grid-container priority-grid">{insertion}</div></div>
             }
         }
